@@ -2,7 +2,33 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1>Live Chat</h1>
+<form id="messageForm">
+    <input type="text" id="user" placeholder="User" />
+    <input type="text" id="message" placeholder="Message" />
+    <button type="button" onclick="sendMessage()">Send Message</button>
+</form>
+<script>
+    function sendMessage() {
+        var user = document.getElementById("user").value;
+        var msg = document.getElementById("message").value;
+        fetch('/Home/SendMessage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user: user, message: msg }),
+        });
+    }
+    <script src="https://www.jsdelivr.com/package/npm/@@microsoft/signalr#:~:text=https%3A//cdn.jsdelivr.net/npm/%40microsoft/signalr%408.0.7/dist/browser/signalr.min.js" ></script>
+<script>
+    const connection = new signalR.HubConnectionBuilder().withUrl("/chat").build();
+    connection.start().then(function () {
+        connection.invoke("SendMessage", "Neha", "Hello, Nisha!");
+    }).catch(function (err) {
+        console.error(err.toString());
+    });
+    connection.on("ReceiveMessage", function (user, msg) {
+        console.log(user + " says: " + msg);
+    });
+</script>   

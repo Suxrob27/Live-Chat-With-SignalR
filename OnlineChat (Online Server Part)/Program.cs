@@ -1,8 +1,11 @@
+using OnlineChat__Online_Server_Part_.SignalR;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddSignalR();  
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -19,6 +22,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+ app.MapHub<Chathub>("/chat");
 
 app.MapControllerRoute(
     name: "default",

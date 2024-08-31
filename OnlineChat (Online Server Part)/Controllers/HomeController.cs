@@ -1,32 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
-using OnlineChat__Online_Server_Part_.Models;
+using Microsoft.AspNetCore.SignalR;
+using OnlineChat__Online_Server_Part_.SignalR;
 using System.Diagnostics;
 
 namespace OnlineChat__Online_Server_Part_.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IHubContext<Chathub> _hubContext;
+        public HomeController(IHubContext<Chathub> hubContext)
         {
-            _logger = logger;
+            _hubContext = hubContext;
         }
-
         public IActionResult Index()
         {
             return View();
         }
-
-        public IActionResult Privacy()
+        [HttpPost]
+        public async Task<IActionResult> SendMessage(string user, string msg)
         {
-            return View();
+            // Your business logic here...   
+            // Send the message to all connected clients  
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", user, msg);
+            return Ok();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
     }
 }
